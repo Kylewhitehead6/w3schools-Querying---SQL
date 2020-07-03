@@ -1,0 +1,120 @@
+#1.	How many of the customers live in Canada?
+
+SELECT * FROM Customers WHERE Country = "Canada";
+ 
+
+#2. What products were ordered for quantity of more than 50?
+
+SELECT ProductName FROM Products, OrderDetails 
+WHERE Products.ProductID = OrderDetails.ProductID 
+AND Quantity > 50;
+ 
+
+#3. Display the result set of previous question in ascending order (based on quantity) 
+SELECT ProductName, Quantity FROM Products,OrderDetails 
+WHERE Products.ProductID = OrderDetails.ProductID
+AND OrderDetails.Quantity>50
+ORDER BY OrderDetails.Quantity ASC;
+
+
+#4. What country has the highest number of customers? 
+SELECT Country FROM Customers 
+GROUP BY Country 
+ORDER BY COUNT(Country) 
+DESC LIMIT 1;
+ 
+#5. What country has the highest volume of orders in total? Display that number ( reflecting total number of orders from that country)
+SELECT Country, COUNT(OrderID) FROM Customers, Orders 
+WHERE Customers.CustomerID = Orders.CustomerID 
+GROUP BY Country
+ORDER BY COUNT(OrderID) DESC LIMIT 1;
+ 
+#6. What city in Germany has the highest number of orders in the country?
+SELECT City, COUNT(OrderID) FROM Customers, Orders 
+WHERE Customers.CustomerID = Orders.CustomerID 
+AND Country = "Germany" 
+GROUP BY City 
+ORDER BY COUNT(OrderID)
+ DESC LIMIT 1;
+ 
+#7. Display the number of orders in each city in Germany
+SELECT City, COUNT(OrderID) FROM Customers, Orders 
+WHERE Customers.CustomerID = Orders.CustomerID 
+AND Country = "Germany" 
+GROUP BY City 
+ORDER BY COUNT(OrderID) DESC;
+ 
+#8. What cities ( in entire db ) have more than one customers?
+SELECT City, COUNT(CustomerName) FROM Customers
+GROUP BY City HAVING COUNT(CustomerName) >1;
+ 
+#9. What shipper has shipped the highest volume (quantity)?
+SELECT ShipperName FROM Shippers, Orders, OrderDetails 
+WHERE Shippers.ShipperID = Orders.ShipperID 
+AND Orders.OrderID = OrderDetails.OrderID 
+GROUP BY ShipperName 
+ORDER BY SUM(Quantity) DESC LIMIT 1;
+ 
+#10. Give the name of the customer who placed the highest number of order (quantity).
+SELECT CustomerName FROM Orders, OrderDetails, Customers 
+WHERE OrderDetails.OrderID = Orders.OrderID 
+AND Orders.CustomerID = Customers.CustomerID 
+ORDER BY Quantity DESC Limit 1;
+
+#11. List the name of products and their quantities sold in Aug of 1996
+SELECT ProductName, Quantity FROM Orders, OrderDetails, Products
+WHERE Orders.OrderID=OrderDetails.OrderID 
+AND OrderDetails.ProductID = Products.ProductID 
+AND OrderDate LIKE '%1996-08%';
+
+
+#12. What product was sold in highest quantity among the two countries UK and Germany? (name of products)
+
+SELECT ProductName FROM Products, OrderDetails, Orders, Customers 
+WHERE Products.ProductID = OrderDetails.ProductID 
+AND OrderDetails.OrderID = Orders.OrderID 
+AND Orders.CustomerID = Customers.CustomerID 
+AND Country IN ("Germany", "UK") ORDER BY Quantity DESC LIMIT 1;
+
+#13. List the names of employees who have some degree in psychology.
+SELECT LastName, FirstName FROM Employees
+WHERE Notes LIKE "%psychology%"
+AND Notes LIKE "%BA%";
+
+#14. List the name of the employee(s) who made the highest sales.
+SELECT LastName, FirstName, Quantity*Price AS Total FROM Employees, Orders, OrderDetails, Products WHERE Employees.EmployeeID = Orders.EmployeeID AND Orders.OrderID = OrderDetails.OrderID AND OrderDetails.ProductID = Products.ProductID ORDER BY Total DESC LIMIT 2;
+ 
+#15. List the name of employees who are older than 60yrs old and have some degrees.
+SELECT LastName, FirstName FROM Employees 
+WHERE "2019-09-20" - BirthDate > 60 
+AND EmployeeID NOT LIKE "%10%";
+
+#16. How many customers are from Germany but not from city Brandenburg
+
+Select * FROM Customers WHERE Country = "Germany" AND City IS NOT "Brandenburg";
+ 
+#17. List the name of employees who work for "Speedy Express"
+SELECT DISTINCT LastName, FirstName FROM Employees, Orders, Shippers
+WHERE Employees.EmployeeID=Orders.EmployeeID
+AND Shippers.ShipperID=Orders.ShipperID
+AND ShipperName = "Speedy Express";
+
+#18. List the name of all employees who have no degree
+SELECT LastName,FirstName FROM Employees 
+WHERE Notes NOT LIKE '%BA%' 
+AND Notes NOT LIKE '%BTS%' 
+AND Notes NOT LIKE '%BS%' 
+AND Notes NOT LIKE '%BSC%' 
+AND Notes NOT LIKE '%MA%' 
+AND Notes NOT LIKE '%PH.D%'
+AND Notes NOT LIKE '%degree%';
+
+#19. Using Suppliers tables, list all cities in UK whose name includes "London"
+SELECT City FROM Suppliers 
+WHERE Country = "UK" AND City LIKE 'London%';
+
+#20. Using table Employees, list the first name of the youngest employee
+SELECT FirstName FROM Employees 
+ORDER BY BirthDate DESC LIMIT 1;
+
+ 
